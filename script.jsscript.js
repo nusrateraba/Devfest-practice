@@ -1,318 +1,560 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+let tasks =
+    JSON.parse(localStorage.getItem("studentTasks")) || [];
+
+let currentFilter = "all";
+let banglaMode = false;
+let darkMode = false;
+
+
+const taskForm =
+    document.getElementById("taskForm");
+
+const taskList =
+    document.getElementById("taskList");
+
+const languageBtn =
+    document.getElementById("languageBtn");
+
+const themeBtn =
+    document.getElementById("themeBtn");
+
+
+taskForm.addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    const task = {
+
+        id: Date.now(),
+
+        name:
+            document
+                .getElementById("taskName")
+                .value
+                .trim(),
+
+        subject:
+            document
+                .getElementById("subject")
+                .value
+                .trim(),
+
+        deadline:
+            document
+                .getElementById("deadline")
+                .value,
+
+        priority:
+            document
+                .getElementById("priority")
+                .value,
+
+        completed: false
+    };
+
+
+    tasks.push(task);
+
+    saveTasks();
+
+    renderTasks();
+
+    taskForm.reset();
+});
+
+
+function saveTasks() {
+
+    localStorage.setItem(
+        "studentTasks",
+        JSON.stringify(tasks)
+    );
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f7fb;
-    color: #1f2937;
-    transition: 0.3s;
+
+function completeTask(id) {
+
+    tasks = tasks.map(task => {
+
+        if (task.id === id) {
+            task.completed = !task.completed;
+        }
+
+        return task;
+    });
+
+    saveTasks();
+
+    renderTasks();
 }
 
-.header {
-    background: #2563eb;
-    color: white;
-    padding: 25px 7%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+function deleteTask(id) {
+
+    tasks =
+        tasks.filter(task => task.id !== id);
+
+    saveTasks();
+
+    renderTasks();
 }
 
-.header h1 {
-    font-size: 28px;
-    margin-bottom: 6px;
-}
 
-.header p {
-    opacity: 0.9;
-}
+function renderTasks() {
 
-.header-buttons {
-    display: flex;
-    gap: 10px;
-}
+    taskList.innerHTML = "";
 
-.header button {
-    border: none;
-    background: white;
-    color: #2563eb;
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
+    let filteredTasks = tasks;
 
-.container {
-    width: 86%;
-    max-width: 1200px;
-    margin: 30px auto;
-}
 
-.dashboard {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-    margin-bottom: 25px;
-}
+    if (currentFilter === "pending") {
 
-.stat-card {
-    background: white;
-    padding: 22px;
-    border-radius: 14px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-}
-
-.stat-card span {
-    display: block;
-    color: #6b7280;
-    margin-bottom: 8px;
-}
-
-.stat-card strong {
-    font-size: 30px;
-    color: #2563eb;
-}
-
-.form-section,
-.tasks-section {
-    background: white;
-    padding: 25px;
-    border-radius: 14px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-}
-
-.form-section h2,
-.tasks-section h2 {
-    margin-bottom: 20px;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 7px;
-    font-weight: bold;
-}
-
-.input-group input,
-.input-group select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    outline: none;
-    font-size: 14px;
-}
-
-.input-group input:focus,
-.input-group select:focus {
-    border-color: #2563eb;
-}
-
-.add-btn {
-    margin-top: 20px;
-    padding: 12px 22px;
-    border: none;
-    border-radius: 8px;
-    background: #2563eb;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.add-btn:hover {
-    background: #1d4ed8;
-}
-
-.task-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-}
-
-.filters {
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
-}
-
-.filter {
-    border: 1px solid #d1d5db;
-    background: white;
-    padding: 8px 12px;
-    border-radius: 7px;
-    cursor: pointer;
-}
-
-.filter.active {
-    background: #2563eb;
-    color: white;
-    border-color: #2563eb;
-}
-
-.task-list {
-    display: grid;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.task-card {
-    border: 1px solid #e5e7eb;
-    padding: 18px;
-    border-radius: 10px;
-    transition: 0.2s;
-}
-
-.task-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.task-card h3 {
-    margin-bottom: 8px;
-}
-
-.task-info {
-    color: #6b7280;
-    margin-bottom: 12px;
-    line-height: 1.6;
-}
-
-.priority {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.priority.High {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-.priority.Medium {
-    background: #fef3c7;
-    color: #d97706;
-}
-
-.priority.Low {
-    background: #dcfce7;
-    color: #16a34a;
-}
-
-.task-actions {
-    margin-top: 12px;
-    display: flex;
-    gap: 8px;
-}
-
-.task-actions button {
-    border: none;
-    padding: 8px 12px;
-    border-radius: 7px;
-    cursor: pointer;
-}
-
-.complete-btn {
-    background: #dcfce7;
-    color: #15803d;
-}
-
-.delete-btn {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-.completed {
-    opacity: 0.6;
-}
-
-.completed h3 {
-    text-decoration: line-through;
-}
-
-.empty {
-    text-align: center;
-    color: #6b7280;
-    padding: 30px;
-}
-
-body.dark {
-    background: #111827;
-    color: #f9fafb;
-}
-
-body.dark .form-section,
-body.dark .tasks-section,
-body.dark .stat-card {
-    background: #1f2937;
-    color: #f9fafb;
-}
-
-body.dark .stat-card span,
-body.dark .task-info {
-    color: #d1d5db;
-}
-
-body.dark .task-card {
-    border-color: #374151;
-}
-
-body.dark .filter {
-    background: #1f2937;
-    color: white;
-    border-color: #4b5563;
-}
-
-body.dark .input-group input,
-body.dark .input-group select {
-    background: #111827;
-    color: white;
-    border-color: #4b5563;
-}
-
-@media (max-width: 800px) {
-
-    .dashboard {
-        grid-template-columns: repeat(2, 1fr);
+        filteredTasks =
+            tasks.filter(
+                task => !task.completed
+            );
     }
 
-    .form-grid {
-        grid-template-columns: 1fr;
+
+    if (currentFilter === "completed") {
+
+        filteredTasks =
+            tasks.filter(
+                task => task.completed
+            );
     }
 
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
+
+    if (currentFilter === "high") {
+
+        filteredTasks =
+            tasks.filter(
+                task => task.priority === "High"
+            );
     }
 
-    .task-header {
-        flex-direction: column;
-        align-items: flex-start;
+
+    if (filteredTasks.length === 0) {
+
+        taskList.innerHTML = `
+            <div class="empty">
+                ${
+                    banglaMode
+                        ? "কোনো টাস্ক পাওয়া যায়নি।"
+                        : "No tasks found."
+                }
+            </div>
+        `;
+
+        updateDashboard();
+
+        return;
+    }
+
+
+    filteredTasks.forEach(task => {
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            `task-card ${
+                task.completed
+                    ? "completed"
+                    : ""
+            }`;
+
+
+        const completeText =
+            task.completed
+                ? (
+                    banglaMode
+                        ? "ফিরিয়ে নিন"
+                        : "Undo"
+                )
+                : (
+                    banglaMode
+                        ? "সম্পন্ন করুন"
+                        : "Complete"
+                );
+
+
+        const deleteText =
+            banglaMode
+                ? "ডিলিট"
+                : "Delete";
+
+
+        const subjectText =
+            banglaMode
+                ? "বিষয়"
+                : "Subject";
+
+
+        const deadlineText =
+            banglaMode
+                ? "শেষ তারিখ"
+                : "Deadline";
+
+
+        card.innerHTML = `
+
+            <h3>
+                ${escapeHTML(task.name)}
+            </h3>
+
+            <div class="task-info">
+
+                ${subjectText}:
+                ${escapeHTML(task.subject)}
+
+                <br>
+
+                ${deadlineText}:
+                ${task.deadline}
+
+            </div>
+
+            <span class="priority ${task.priority}">
+                ${getPriorityText(task.priority)}
+            </span>
+
+            <div class="task-actions">
+
+                <button
+                    class="complete-btn"
+                    onclick="completeTask(${task.id})">
+
+                    ${completeText}
+
+                </button>
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteTask(${task.id})">
+
+                    ${deleteText}
+
+                </button>
+
+            </div>
+        `;
+
+
+        taskList.appendChild(card);
+    });
+
+
+    updateDashboard();
+}
+
+
+function updateDashboard() {
+
+    const total =
+        tasks.length;
+
+
+    const completed =
+        tasks.filter(
+            task => task.completed
+        ).length;
+
+
+    const pending =
+        tasks.filter(
+            task => !task.completed
+        ).length;
+
+
+    const high =
+        tasks.filter(
+            task => task.priority === "High"
+        ).length;
+
+
+    document.getElementById("totalTasks")
+        .textContent = total;
+
+
+    document.getElementById("completedTasks")
+        .textContent = completed;
+
+
+    document.getElementById("pendingTasks")
+        .textContent = pending;
+
+
+    document.getElementById("highTasks")
+        .textContent = high;
+}
+
+
+function getPriorityText(priority) {
+
+    if (!banglaMode) {
+        return priority;
+    }
+
+
+    if (priority === "High") {
+        return "উচ্চ";
+    }
+
+
+    if (priority === "Medium") {
+        return "মাঝারি";
+    }
+
+
+    return "কম";
+}
+
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+}
+
+
+document
+    .querySelectorAll(".filter")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            function() {
+
+                document
+                    .querySelectorAll(".filter")
+                    .forEach(btn => {
+
+                        btn.classList.remove(
+                            "active"
+                        );
+
+                    });
+
+
+                this.classList.add("active");
+
+
+                currentFilter =
+                    this.dataset.filter;
+
+
+                renderTasks();
+            }
+        );
+    });
+
+
+themeBtn.addEventListener(
+    "click",
+    function() {
+
+        darkMode = !darkMode;
+
+        document.body
+            .classList.toggle("dark");
+
+
+        themeBtn.textContent =
+            darkMode
+                ? "☀️"
+                : "🌙";
+    }
+);
+
+
+languageBtn.addEventListener(
+    "click",
+    function() {
+
+        banglaMode = !banglaMode;
+
+        updateLanguage();
+
+        renderTasks();
+    }
+);
+
+
+function updateLanguage() {
+
+    if (banglaMode) {
+
+        languageBtn.textContent =
+            "English";
+
+
+        document.getElementById("title")
+            .textContent =
+            "স্টুডেন্ট টাস্ক ট্র্যাকার";
+
+
+        document.getElementById("subtitle")
+            .textContent =
+            "সহজে আপনার একাডেমিক কাজ পরিচালনা করুন";
+
+
+        document.getElementById("totalLabel")
+            .textContent =
+            "মোট টাস্ক";
+
+
+        document.getElementById("completedLabel")
+            .textContent =
+            "সম্পন্ন";
+
+
+        document.getElementById("pendingLabel")
+            .textContent =
+            "বাকি";
+
+
+        document.getElementById("highLabel")
+            .textContent =
+            "উচ্চ অগ্রাধিকার";
+
+
+        document.getElementById("formTitle")
+            .textContent =
+            "নতুন টাস্ক যোগ করুন";
+
+
+        document.getElementById("taskNameLabel")
+            .textContent =
+            "টাস্কের নাম";
+
+
+        document.getElementById("subjectLabel")
+            .textContent =
+            "বিষয়";
+
+
+        document.getElementById("deadlineLabel")
+            .textContent =
+            "শেষ তারিখ";
+
+
+        document.getElementById("priorityLabel")
+            .textContent =
+            "অগ্রাধিকার";
+
+
+        document.getElementById("addBtn")
+            .textContent =
+            "+ টাস্ক যোগ করুন";
+
+
+        document.getElementById("myTasksTitle")
+            .textContent =
+            "আমার টাস্ক";
+
+
+        const filters =
+            document.querySelectorAll(
+                ".filter"
+            );
+
+
+        filters[0].textContent = "সব";
+        filters[1].textContent = "বাকি";
+        filters[2].textContent = "সম্পন্ন";
+        filters[3].textContent =
+            "উচ্চ অগ্রাধিকার";
+
+    } else {
+
+        languageBtn.textContent =
+            "বাংলা";
+
+
+        document.getElementById("title")
+            .textContent =
+            "Student Task Tracker";
+
+
+        document.getElementById("subtitle")
+            .textContent =
+            "Manage your academic tasks easily";
+
+
+        document.getElementById("totalLabel")
+            .textContent =
+            "Total Tasks";
+
+
+        document.getElementById("completedLabel")
+            .textContent =
+            "Completed";
+
+
+        document.getElementById("pendingLabel")
+            .textContent =
+            "Pending";
+
+
+        document.getElementById("highLabel")
+            .textContent =
+            "High Priority";
+
+
+        document.getElementById("formTitle")
+            .textContent =
+            "Add New Task";
+
+
+        document.getElementById("taskNameLabel")
+            .textContent =
+            "Task Name";
+
+
+        document.getElementById("subjectLabel")
+            .textContent =
+            "Subject";
+
+
+        document.getElementById("deadlineLabel")
+            .textContent =
+            "Deadline";
+
+
+        document.getElementById("priorityLabel")
+            .textContent =
+            "Priority";
+
+
+        document.getElementById("addBtn")
+            .textContent =
+            "+ Add Task";
+
+
+        document.getElementById("myTasksTitle")
+            .textContent =
+            "My Tasks";
+
+
+        const filters =
+            document.querySelectorAll(
+                ".filter"
+            );
+
+
+        filters[0].textContent = "All";
+        filters[1].textContent = "Pending";
+        filters[2].textContent = "Completed";
+        filters[3].textContent =
+            "High Priority";
     }
 }
 
-@media (max-width: 500px) {
 
-    .dashboard {
-        grid-template-columns: 1fr;
-    }
-
-    .container {
-        width: 92%;
-    }
-
-    .header h1 {
-        font-size: 23px;
-    }
-}
+renderTasks();

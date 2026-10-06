@@ -4,96 +4,174 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Task Tracker</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <header class="header">
+
         <div>
-            <h1>Student Task Tracker</h1>
-            <p>Manage your academic tasks easily</p>
+            <h1 id="title">Student Task Tracker</h1>
+            <p id="subtitle">Manage your academic tasks easily</p>
         </div>
 
         <div class="header-buttons">
             <button id="languageBtn">বাংলা</button>
             <button id="themeBtn">🌙</button>
         </div>
+
     </header>
+
 
     <main class="container">
 
         <section class="dashboard">
+
             <div class="stat-card">
-                <span>Total Tasks</span>
+                <span id="totalLabel">Total Tasks</span>
                 <strong id="totalTasks">0</strong>
             </div>
 
             <div class="stat-card">
-                <span>Completed</span>
+                <span id="completedLabel">Completed</span>
                 <strong id="completedTasks">0</strong>
             </div>
 
             <div class="stat-card">
-                <span>Pending</span>
+                <span id="pendingLabel">Pending</span>
                 <strong id="pendingTasks">0</strong>
             </div>
 
             <div class="stat-card">
-                <span>High Priority</span>
+                <span id="highLabel">High Priority</span>
                 <strong id="highTasks">0</strong>
             </div>
+
         </section>
 
+
         <section class="form-section">
-            <h2>Add New Task</h2>
+
+            <h2 id="formTitle">Add New Task</h2>
 
             <form id="taskForm">
 
                 <div class="form-grid">
 
                     <div class="input-group">
-                        <label>Task Name</label>
-                        <input type="text" id="taskName" placeholder="Enter task name" required>
+                        <label id="taskNameLabel">Task Name</label>
+
+                        <input
+                            type="text"
+                            id="taskName"
+                            placeholder="Enter task name"
+                            required
+                        >
                     </div>
 
-                    <div class="input-group">
-                        <label>Subject</label>
-                        <input type="text" id="subject" placeholder="Enter subject" required>
-                    </div>
 
                     <div class="input-group">
-                        <label>Deadline</label>
-                        <input type="date" id="deadline" required>
+                        <label id="subjectLabel">Subject</label>
+
+                        <input
+                            type="text"
+                            id="subject"
+                            placeholder="Enter subject"
+                            required
+                        >
                     </div>
 
+
                     <div class="input-group">
-                        <label>Priority</label>
+                        <label id="deadlineLabel">Deadline</label>
+
+                        <input
+                            type="date"
+                            id="deadline"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="input-group">
+                        <label id="priorityLabel">Priority</label>
+
                         <select id="priority">
-                            <option value="Low">Low</option>
-                            <option value="Medium" selected>Medium</option>
-                            <option value="High">High</option>
+
+                            <option value="Low">
+                                Low
+                            </option>
+
+                            <option value="Medium" selected>
+                                Medium
+                            </option>
+
+                            <option value="High">
+                                High
+                            </option>
+
                         </select>
+
                     </div>
 
                 </div>
 
-                <button class="add-btn" type="submit">+ Add Task</button>
+
+                <button
+                    type="submit"
+                    class="add-btn"
+                    id="addBtn"
+                >
+                    + Add Task
+                </button>
 
             </form>
+
         </section>
+
 
         <section class="tasks-section">
 
             <div class="task-header">
-                <h2>My Tasks</h2>
+
+                <h2 id="myTasksTitle">My Tasks</h2>
 
                 <div class="filters">
-                    <button class="filter active" data-filter="all">All</button>
-                    <button class="filter" data-filter="pending">Pending</button>
-                    <button class="filter" data-filter="completed">Completed</button>
-                    <button class="filter" data-filter="high">High Priority</button>
+
+                    <button
+                        class="filter active"
+                        data-filter="all"
+                    >
+                        All
+                    </button>
+
+                    <button
+                        class="filter"
+                        data-filter="pending"
+                    >
+                        Pending
+                    </button>
+
+                    <button
+                        class="filter"
+                        data-filter="completed"
+                    >
+                        Completed
+                    </button>
+
+                    <button
+                        class="filter"
+                        data-filter="high"
+                    >
+                        High Priority
+                    </button>
+
                 </div>
+
             </div>
+
 
             <div id="taskList" class="task-list"></div>
 
@@ -101,6 +179,8 @@
 
     </main>
 
+
     <script src="script.js"></script>
+
 </body>
 </html>
